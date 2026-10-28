@@ -1,0 +1,20 @@
+# Environments
+venv/
+.venv/
+env/
+
+# Python byte-code & caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+events.log
