@@ -157,13 +157,4 @@ curl -X POST http://127.0.0.1:8000/recommend-route \
   * Duplicate Transactions: `0.0%`
   * Population Stability Index (PSI): `0.0000` (stable distribution)
 
----
 
-## Group 65 Members & Contributions
-
-| Sl. No | BITS ID | Name | Role / Contribution |
-|---|---|---|---|
-| 1 | 2025AE05773 | Mitesh Kapil | OOP design, Feature engineering refactoring, Research vs Production analysis |
-| 2 | 2025AE05774 | Sayam Kansal | Data ingestion & validation pipeline, Data Quality metrics, Drift evaluation |
-| 3 | 2025AE05392 | Prashansa Gupta | FastAPI REST API design, Pydantic schemas, ML inference & training tests |
-| 4 | 2025AF05050 | Udayasankar Gopalakrishnan | Logging architecture, Quality Assurance test suite, Production & Security design |
