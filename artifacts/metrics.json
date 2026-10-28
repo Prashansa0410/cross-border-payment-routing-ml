@@ -80,10 +80,10 @@
   "expected_calibration_error": 0.00657161682502706,
   "regression_success_only": {
     "gbdt_regressor": {
-      "mae_seconds": 4182.869922853082,
-      "rmse_seconds": 9301.792524760218,
-      "r2": 0.9418566669652766,
-      "mae_minutes": 69.71449871421804
+      "mae_seconds": 4182.93204419729,
+      "rmse_seconds": 9301.922579087803,
+      "r2": 0.9418550410754442,
+      "mae_minutes": 69.71553406995484
     },
     "historical_latency_baseline": {
       "mae_seconds": 6804.032997517886,
@@ -98,50 +98,10 @@
       "mae_minutes": 397.324749355137
     }
   },
-  "latency": {
-    "single_request_p50_ms": 23.60022900029435,
-    "single_request_p95_ms": 29.194844050743995,
-    "single_request_p99_ms": 44.03541893014328,
-    "six_route_batch_ms": 24.742333000176586
-  },
   "training_time_seconds": {
-    "classifier": 1.2574288845062256,
-    "regressor": 1.9562289714813232
+    "classifier": 1.3477818965911865,
+    "regressor": 2.4434988498687744
   },
-  "feature_importance_classifier": {
-    "historical_route_success_rate": 0.02983,
-    "sending_institution": 0.02047,
-    "payment_type": 0.01347,
-    "historical_avg_latency_seconds": 0.01015,
-    "route_id": 0.00889,
-    "hour_of_day": 0.00835,
-    "day_of_week": 0.00572,
-    "amount": 0.00325,
-    "destination_country": 0.00146,
-    "route_cost": 0.0008,
-    "source_country": 0.00074,
-    "receiving_institution": 0.00057,
-    "source_currency": 0.0,
-    "destination_currency": 0.0,
-    "is_weekend": 0.0
-  },
-  "feature_importance_regressor": {
-    "sending_institution": 0.97283,
-    "route_id": 0.52726,
-    "day_of_week": 0.01875,
-    "hour_of_day": 0.00679,
-    "destination_country": 0.00144,
-    "payment_type": 0.0013,
-    "amount": 0.00034,
-    "historical_route_success_rate": 0.00013,
-    "historical_avg_latency_seconds": 9e-05,
-    "route_cost": 3e-05,
-    "is_weekend": 1e-05,
-    "receiving_institution": 0.0,
-    "source_currency": 0.0,
-    "destination_currency": 0.0,
-    "source_country": -1e-05
-  },
-  "model_version": "v20261028-121925",
-  "total_pipeline_seconds": 15.008291721343994
+  "model_version": "v20261028-180124",
+  "total_pipeline_seconds": 4.802782773971558
 }

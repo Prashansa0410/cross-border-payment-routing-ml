@@ -4,23 +4,50 @@ Exposes standardized REST endpoints for health checks, model prediction,
 route recommendation, and model metadata.
 """
 
+import sys
 import time
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+# Ensure src directory is in sys.path regardless of current working directory
+SRC_DIR = Path(__file__).resolve().parent.parent
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.schemas import (
-    HealthResponse,
-    ModelInfoResponse,
-    PredictRequest,
-    PredictResponse,
-    RecommendRouteRequest,
-    RecommendRouteResponse,
-)
+try:
+    from .schemas import (
+        HealthResponse,
+        ModelInfoResponse,
+        PredictRequest,
+        PredictResponse,
+        RecommendRouteRequest,
+        RecommendRouteResponse,
+    )
+except (ImportError, ValueError):
+    try:
+        from api.schemas import (
+            HealthResponse,
+            ModelInfoResponse,
+            PredictRequest,
+            PredictResponse,
+            RecommendRouteRequest,
+            RecommendRouteResponse,
+        )
+    except ImportError:
+        from src.api.schemas import (
+            HealthResponse,
+            ModelInfoResponse,
+            PredictRequest,
+            PredictResponse,
+            RecommendRouteRequest,
+            RecommendRouteResponse,
+        )
 from config import DEFAULT_WEIGHTS
 from decision_engine import Constraints, recommend
 from feature_pipeline import TemporalEnricher
