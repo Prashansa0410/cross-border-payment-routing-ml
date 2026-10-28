@@ -58,8 +58,20 @@ class PaymentPredictor:
             return
 
         try:
-            self.clf = joblib.load(clf_path)
-            self.reg = joblib.load(reg_path)
+            try:
+                self.clf = joblib.load(clf_path)
+                self.reg = joblib.load(reg_path)
+            except (ValueError, AttributeError, TypeError, ModuleNotFoundError) as err:
+                logger.warning(
+                    "Model artifact version mismatch detected (%s). "
+                    "Automatically retraining models for the active Python/NumPy environment...",
+                    str(err),
+                )
+                from model_trainer import ModelTrainer
+
+                ModelTrainer(artifacts_dir=self.artifacts_dir).train_and_evaluate()
+                self.clf = joblib.load(clf_path)
+                self.reg = joblib.load(reg_path)
 
             if thresh_path.exists():
                 with open(thresh_path) as f:
