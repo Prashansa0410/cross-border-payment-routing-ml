@@ -150,3 +150,14 @@ def test_openapi_schema_availability(client):
     assert "/recommend-route" in schema["paths"]
     assert "/health" in schema["paths"]
     assert "/model-info" in schema["paths"]
+
+
+def test_ui_endpoints_availability(client):
+    """Verifies that the interactive web interfaces are served correctly."""
+    dashboard_resp = client.get("/")
+    assert dashboard_resp.status_code == 200
+    assert "RouteFlow" in dashboard_resp.text
+
+    demo_resp = client.get("/demo")
+    assert demo_resp.status_code == 200
+    assert "RouteFlow" in demo_resp.text

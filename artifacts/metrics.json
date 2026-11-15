@@ -99,9 +99,9 @@
     }
   },
   "training_time_seconds": {
-    "classifier": 1.3477818965911865,
-    "regressor": 2.4434988498687744
+    "classifier": 1.308387041091919,
+    "regressor": 2.2140398025512695
   },
-  "model_version": "v20261028-180124",
-  "total_pipeline_seconds": 4.802782773971558
+  "model_version": "v20261115-100745",
+  "total_pipeline_seconds": 4.442883253097534
 }

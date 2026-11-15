@@ -1,6 +1,6 @@
 """metrics_evaluator.py - Model Quality and Data Quality metrics module.
 --------------------------------------------------------------------------
-Fulfills Assignment 2 Objective 2, Requirement 8:
+Production Model & Data Quality Evaluation Suite:
   * Model Quality: ROC-AUC, F1, Brier Score, Expected Calibration Error (ECE), MAE, R²
   * Data Quality: Schema validity rate, missing value rate, duplicate rate, drift detection (PSI)
 """

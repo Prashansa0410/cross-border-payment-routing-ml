@@ -118,8 +118,8 @@ class DataValidator:
             ts = pd.to_datetime(df["timestamp"])
             temporal_ok = bool(
                 (ts.dt.hour == df["hour_of_day"]).all()
-                and (ts.dt.dayofweek == df["day_of_week"]).all()
-                and ((ts.dt.dayofweek >= 5).astype(int) == df["is_weekend"]).all()
+                and (ts.dt.day_of_week == df["day_of_week"]).all()
+                and ((ts.dt.day_of_week >= 5).astype(int) == df["is_weekend"]).all()
             )
             if not temporal_ok:
                 logger.warning(

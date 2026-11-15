@@ -1,9 +1,7 @@
-# Production Experimentation & Security Architecture
+# Production Experimentation, Shadow Deployment & ML Security Architecture
 
-**Course:** AIMLZG546 — Software Engineering for Machine Learning  
-**Assignment:** Assignment II (Objective 2, Requirement 9)  
-**Group:** 65  
-**System:** Cross-Border Payment Routing ML System  
+**System:** RouteFlow AI — Cross-Border Payment Routing ML Engine  
+**Domain:** Financial Clearing Rails & Automated Governance  
 
 ---
 

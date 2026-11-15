@@ -52,7 +52,6 @@ def load_raw(path: str = "data.csv") -> pd.DataFrame:
             path,
             "data.csv",
             "../data.csv",
-            "Assignment2/data.csv",
             os.path.join(os.path.dirname(__file__), "..", "data.csv"),
             os.path.join(os.path.dirname(__file__), "data.csv"),
         ]:

@@ -1,18 +1,17 @@
-# Research Code vs. Production Code Demonstration
+# Architectural Evolution: From Research Prototype to Enterprise ML Serving
 
-**Course:** AIMLZG546 — Software Engineering for Machine Learning  
-**Assignment:** Assignment II  
-**Group:** 65  
-**Component Chosen:** Model Inference, Data Preparation, and Payment Route Recommendation  
+**System:** RouteFlow AI — Cross-Border Payment Routing ML Engine  
+**Domain:** Global Correspondent Banking & Intermediary Settlement Optimization  
+**Core Components:** High-Throughput Inference Service, Data Preprocessing Pipeline, and Prescriptive Route Decision Engine  
 
 ---
 
 ## 1. Overview and Rationale
 
-In Machine Learning Engineering, transitioning from research/experimentation to production requires addressing critical software qualities: reliability, maintainability, testability, observabiity, and defensive error handling.
+In financial Machine Learning Engineering, transitioning from research/experimentation to production requires addressing critical software qualities: reliability, maintainability, testability, observability, and defensive error handling.
 
 In this project:
-- **Research / Experimentation Environment:** `65.ipynb` (Jupyter Notebook prototype).
+- **Research / Experimentation Environment:** Interactive Jupyter exploratory pipeline (`notebooks/pipeline_walkthrough.ipynb`).
 - **Production-Oriented Codebase:** Modular Python packages in `src/` (`src/data_ingestion.py`, `src/feature_pipeline.py`, `src/inference.py`, `src/decision_engine.py`, `src/api/app.py`).
 
 We analyze the concrete architectural and operational differences across five dimensions below.
@@ -21,7 +20,7 @@ We analyze the concrete architectural and operational differences across five di
 
 ## 2. Side-by-Side Architectural Comparison
 
-| Dimension | Research Prototype (`65.ipynb`) | Production Implementation (`src/`) |
+| Dimension | Research Prototype (`notebooks/`) | Production Implementation (`src/`) |
 |---|---|---|
 | **Execution Paradigm** | Sequential, interactive cell execution with global state. | Stateless, thread-safe, modular OOP services. |
 | **Data Handling** | Ad-hoc `pd.read_csv("../data.csv")` without type enforcement. | OOP `DataIngestion` with path resolution, file existence checks, and schema validation. |
@@ -36,7 +35,7 @@ We analyze the concrete architectural and operational differences across five di
 ## 3. Deep-Dive: Specific Component Transitions
 
 ### A. Data Ingestion and Validation
-* **Notebook (`65.ipynb` Cell 2):**  
+* **Notebook (`notebooks/pipeline_walkthrough.ipynb`):**  
   Directly executes:
   ```python
   df = load_raw("../data.csv")
@@ -47,7 +46,7 @@ We analyze the concrete architectural and operational differences across five di
   Encapsulated inside `DataIngestion` and `DataValidator` classes. Verifies path existence defensively, logs row counts and execution metrics via `logger.info`, computes schema conformance, and generates a structured `DataQualityReport` dataclass.
 
 ### B. Feature Transformation & Temporal Enrichment
-* **Notebook (`65.ipynb` Cell 10):**  
+* **Notebook (`notebooks/pipeline_walkthrough.ipynb`):**  
   Manual dictionary concatenation in a list comprehension:
   ```python
   X = pd.DataFrame([{**payment, **r} for r in routes])[FEATURES]
@@ -57,7 +56,7 @@ We analyze the concrete architectural and operational differences across five di
   `TemporalEnricher.enrich()` extracts `hour_of_day`, `day_of_week`, and `is_weekend` safely with fallback defaults. `FeaturePipeline.prepare_inference_frame()` explicitly checks all required columns, validates data types, and raises descriptive `ValueError` exceptions before any ML model is invoked.
 
 ### C. Model Loading & Inference Engine
-* **Notebook (`65.ipynb` Cell 10):**  
+* **Notebook (`notebooks/pipeline_walkthrough.ipynb`):**  
   Direct script execution:
   ```python
   clf = joblib.load("../artifacts/success_classifier.joblib")
@@ -70,7 +69,7 @@ We analyze the concrete architectural and operational differences across five di
   `PaymentPredictor` implements the Singleton pattern with `threading.Lock`. The GBDT classifier and regressor are loaded once at application startup into memory. Inference applies domain range protections (`np.clip(p_success, 0.0, 1.0)` and `np.clip(t_settle, 0.0, None)`), measures inference duration via high-resolution monotonic clocks (`time.perf_counter()`), and returns versioned metadata.
 
 ### D. Route Recommendation & Decision Logic
-* **Notebook (`65.ipynb` Cell 10):**  
+* **Notebook (`notebooks/pipeline_walkthrough.ipynb`):**  
   Calls `recommend(cands, mode=mode, constraints=cons)` and prints results to stdout.
 * **Production (`src/decision_engine.py` & `src/api/app.py`):**  
   Exposed via a REST endpoint `POST /recommend-route`. Input constraints and optimization weights are verified by Pydantic validators (preventing negative weights or conflicting bounds). When hard constraints cannot be satisfied, the engine gracefully relaxes constraints to avoid dropped payments and logs a structured warning.

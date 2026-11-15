@@ -18,7 +18,7 @@ if str(SRC_DIR) not in sys.path:
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 try:
     from .schemas import (
@@ -248,3 +248,27 @@ async def recommend_route(req: RecommendRouteRequest) -> RecommendRouteResponse:
         constraints_relaxed=rec_result["constraints_relaxed"],
         inference_ms=inference_ms,
     )
+
+
+# ---------------------------------------------------------------------------
+# Interactive Web Interfaces (Dashboard & Pipeline Walkthrough)
+# ---------------------------------------------------------------------------
+UI_DIR = Path(__file__).resolve().parent.parent.parent / "ui"
+if UI_DIR.exists():
+
+    @app.get("/", include_in_schema=False)
+    async def serve_dashboard():
+        """Serves the Operational Payment Routing Dashboard."""
+        index_path = UI_DIR / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        return JSONResponse({"status": "ok", "service": "payment-routing-api"})
+
+    @app.get("/demo", include_in_schema=False)
+    @app.get("/demo/", include_in_schema=False)
+    async def serve_demo():
+        """Serves the 5-Stage Interactive Pipeline & Corridor Walkthrough."""
+        demo_path = UI_DIR / "demo.html"
+        if demo_path.exists():
+            return FileResponse(demo_path)
+        return JSONResponse({"status": "error", "message": "Demo interface not found"})

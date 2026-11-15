@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteFlow AI | Intelligent Cross-Border Payment Routing</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            accent: '#06b6d4',
+                            emerald: '#10b981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .dark body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark .glass-panel {
+            background: rgba(17, 24, 39, 0.8);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+        .pulse-dot {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .4; transform: scale(1.1); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-200 dark:border-white/10 glass-panel sticky top-0 z-50 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center shadow-md shadow-indigo-500/20">
+                    <i data-lucide="route" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-lg tracking-tight text-slate-900 dark:text-white">RouteFlow<span class="text-indigo-600 dark:text-indigo-400">.ai</span></span>
+                        <span class="text-[10px] font-mono uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded font-semibold">Dual ML</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Production Cross-Border Payment Routing Dashboard</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Architecture & Lifecycle Walkthrough Link -->
+                <a href="/demo" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 transition-all">
+                    <i data-lucide="git-branch" class="w-4 h-4 text-indigo-500"></i>
+                    <span>Pipeline & Architecture Flow</span>
+                </a>
+
+                <!-- Backend Connection Telemetry Badge -->
+                <div id="connectionBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300">
+                    <span id="connectionDot" class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+                    <span id="connectionText">API: Initializing...</span>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" id="themeToggleBtn" title="Toggle Theme" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 transition-colors">
+                    <i id="themeIcon" data-lucide="sun" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 space-y-6">
+
+        <!-- Top Showcase Strip / Corridor Presets -->
+        <div class="space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500"></i> Active Corridor Presets
+                </span>
+                <span class="text-xs text-slate-400 font-mono">Dispatches live API POST request</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                <button onclick="applyPreset('US', 'India', 'USD', 'INR', 5000, 'B2B')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇺🇸 US → 🇮🇳 IN</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">$5,000</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>B2B Commercial</span>
+                        <span class="text-slate-400 font-mono">USD/INR</span>
+                    </div>
+                </button>
+
+                <button onclick="applyPreset('UK', 'Nigeria', 'GBP', 'NGN', 12500, 'P2P')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇬🇧 UK → 🇳🇬 NG</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">£12,500</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>P2P Remittance</span>
+                        <span class="text-slate-400 font-mono">GBP/NGN</span>
+                    </div>
+                </button>
+
+                <button onclick="applyPreset('Singapore', 'Philippines', 'SGD', 'PHP', 3200, 'C2B')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇸🇬 SG → 🇵🇭 PH</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">S$3,200</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>C2B Checkout</span>
+                        <span class="text-slate-400 font-mono">SGD/PHP</span>
+                    </div>
+                </button>
+
+                <button onclick="applyPreset('Germany', 'India', 'EUR', 'INR', 8500, 'B2B')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇩🇪 DE → 🇮🇳 IN</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">€8,500</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>B2B Settlement</span>
+                        <span class="text-slate-400 font-mono">EUR/INR</span>
+                    </div>
+                </button>
+
+                <button onclick="applyPreset('US', 'Mexico', 'USD', 'MXN', 25000, 'B2B')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇺🇸 US → 🇲🇽 MX</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">$25,000</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>High-Value B2B</span>
+                        <span class="text-slate-400 font-mono">USD/MXN</span>
+                    </div>
+                </button>
+
+                <button onclick="applyPreset('Australia', 'India', 'AUD', 'INR', 1800, 'B2C')" class="glass-panel glass-panel-hover p-2.5 rounded-xl text-left transition-all border border-slate-200 dark:border-white/5 group shadow-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        <span>🇦🇺 AU → 🇮🇳 IN</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-medium">A$1,800</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
+                        <span>B2C Payout</span>
+                        <span class="text-slate-400 font-mono">AUD/INR</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Workspace: Form & Decision Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left Panel: Transaction Input & Objective Policy (4 Cols) -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="glass-panel rounded-2xl p-5 border border-slate-200 dark:border-white/10 space-y-5 shadow-xl">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="sliders" class="w-4 h-4 text-indigo-500"></i>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-wide">Transaction Details</h2>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded">Payload</span>
+                    </div>
+
+                    <form id="routingForm" onsubmit="event.preventDefault(); evaluateRoutes();" class="space-y-4">
+                        <!-- Origin & Destination -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Origin Country</label>
+                                <input type="text" id="source_country" value="US" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Destination</label>
+                                <input type="text" id="destination_country" value="India" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Currencies -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Sending Currency</label>
+                                <input type="text" id="source_currency" value="USD" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-300 focus:outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Target Currency</label>
+                                <input type="text" id="destination_currency" value="INR" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300 focus:outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Amount & Payment Type -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Amount</label>
+                                <input type="number" id="amount" value="5000" min="1" step="any" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Payment Rail / Type</label>
+                                <select id="payment_type" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
+                                    <option value="B2B">B2B Commercial</option>
+                                    <option value="P2P">P2P Remittance</option>
+                                    <option value="C2B">C2B Checkout</option>
+                                    <option value="B2C">B2C Payout</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Business Optimization Strategy -->
+                        <div class="border-t border-slate-200 dark:border-white/10 pt-3 space-y-2">
+                            <label class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                                <span>Optimization Policy</span>
+                                <span class="text-[10px] text-indigo-500 font-mono">Objective Weighting</span>
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setPolicy('optimisation')" id="policy-optimisation" class="policy-btn text-[11px] py-1.5 px-2 rounded-lg font-medium border border-indigo-500/50 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 text-center transition-all">
+                                    Balanced
+                                </button>
+                                <button type="button" onclick="setPolicy('speed')" id="policy-speed" class="policy-btn text-[11px] py-1.5 px-2 rounded-lg font-medium border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition-all">
+                                    Ultra-Fast
+                                </button>
+                                <button type="button" onclick="setPolicy('cost')" id="policy-cost" class="policy-btn text-[11px] py-1.5 px-2 rounded-lg font-medium border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition-all">
+                                    Lowest Cost
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submitBtn" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:opacity-95 text-white font-semibold text-xs tracking-wide shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all transform active:scale-[0.99]">
+                            <i data-lucide="cpu" class="w-4 h-4"></i>
+                            <span id="btnText">Execute Dual ML Route Evaluation</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Unified Pipeline Architecture Card (Fixing the confusing colors) -->
+                <div class="glass-panel rounded-2xl p-4 border border-slate-200 dark:border-white/10 text-xs space-y-2.5">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="git-merge" class="w-3.5 h-3.5 text-indigo-500"></i> Pipeline Execution Stages
+                        </span>
+                        <span id="pipelineOverallStatus" class="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">All Active</span>
+                    </span>
+                    
+                    <!-- Unified Consistent Stage Colors with Active Checks -->
+                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300 text-[11px] font-mono bg-slate-50 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200 dark:border-white/5">
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-500 font-bold">✓ 01.</span>
+                                <span>Request Validation (FastAPI)</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono">1.2ms</span>
+                        </div>
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-500 font-bold">✓ 02.</span>
+                                <span>Corridor Rail Discovery</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono">6 routes</span>
+                        </div>
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-500 font-bold">✓ 03.</span>
+                                <span>GBDT Success Inference</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono">Calibrated</span>
+                        </div>
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-500 font-bold">✓ 04.</span>
+                                <span>GBDT Latency Regression</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono">Seconds</span>
+                        </div>
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-500 font-bold">✓ 05.</span>
+                                <span>Constrained Decision Engine</span>
+                            </div>
+                            <span class="text-[10px] text-emerald-500 font-mono font-bold">Optimal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Results & Matrix (8 Cols) -->
+            <div class="lg:col-span-8 space-y-5">
+                
+                <!-- Buffer / Loading State (Shown while waiting for API) -->
+                <div id="dashboardLoader" class="hidden glass-panel rounded-2xl p-8 border border-indigo-500/30 text-center space-y-3">
+                    <div class="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
+                    <div class="text-sm font-bold text-slate-900 dark:text-white">Dispatching API Call to Inference Engine...</div>
+                    <p class="text-xs text-slate-500 font-mono">Computing parallel HistGradientBoosting scores across all rails</p>
+                </div>
+
+                <!-- Recommendation Hero Banner -->
+                <div id="winnerHero" class="relative overflow-hidden glass-panel rounded-2xl p-6 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 via-white to-white dark:from-emerald-950/20 dark:via-slate-900/80 dark:to-slate-900 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 border-b border-slate-200 dark:border-white/10 pb-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> RECOMMENDED ROUTE WINNER
+                                </span>
+                                <span id="routeIdBadge" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded">ROUTE_E</span>
+                            </div>
+                            <h3 id="recommendedTitle" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Bank_B → Bank_Z Bilateral Clearing</h3>
+                            <p id="decisionReason" class="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-xl">
+                                Optimal weighted trade-off of success reliability, clearing latency, and fixed route fee.
+                            </p>
+                        </div>
+
+                        <!-- Score Pill -->
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 p-3 rounded-xl sm:min-w-[130px]">
+                            <span class="text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400">Utility Score</span>
+                            <span id="compositeScore" class="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">0.864</span>
+                        </div>
+                    </div>
+
+                    <!-- Highlight Metrics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-white/5">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-0.5">Predicted Success</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="metricSuccess" class="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">98.1%</span>
+                                <span class="text-[10px] text-slate-400">calibrated</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <div id="metricSuccessBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700" style="width: 98.1%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-white/5">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-0.5">Exp. Settlement</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="metricSettlement" class="text-lg font-bold font-mono text-cyan-600 dark:text-cyan-400">26.6 mins</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">wall-clock time</span>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-white/5">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-0.5">Route Network Cost</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="metricCost" class="text-lg font-bold font-mono text-indigo-600 dark:text-indigo-300">$3.50</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">Fixed clearing fee</span>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-white/5">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-0.5">Constraint Status</span>
+                            <div class="flex items-center gap-1 mt-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                <span>Passed (&gt;85%)</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">SLA Compliant</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Candidate Routes Matrix Table -->
+                <div id="matrixCard" class="glass-panel rounded-2xl p-5 border border-slate-200 dark:border-white/10 space-y-4 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-cyan-500"></i>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white tracking-wide">Candidate Corridors Comparison Matrix</h3>
+                        </div>
+                        <span id="inferenceTelemetryTag" class="text-xs font-mono text-slate-500 dark:text-slate-400">Response: 122ms</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-950/40">
+                                    <th class="py-2.5 px-3 rounded-l-lg">Route ID & Institutions</th>
+                                    <th class="py-2.5 px-3">Predicted Success</th>
+                                    <th class="py-2.5 px-3">Predicted Settlement</th>
+                                    <th class="py-2.5 px-3">Cost ($)</th>
+                                    <th class="py-2.5 px-3">Decision Score</th>
+                                    <th class="py-2.5 px-3 rounded-r-lg text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="routesTableBody" class="text-xs divide-y divide-slate-100 dark:divide-white/5 font-medium">
+                                <!-- Populated dynamically from API -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer Note -->
+                    <div class="pt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-white/5">
+                        <span class="flex items-center gap-1.5 font-mono">
+                            <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-500"></i>
+                            Multi-Objective Utility Optimizer Active
+                        </span>
+                        <span class="font-mono text-slate-400">API Endpoint: /recommend-route</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-white/5 glass-panel py-4 mt-6 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-900 dark:text-white">RouteFlow AI</span>
+                <span>•</span>
+                <span>Cross-Border Machine Learning Operational Prototype</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono">
+                Scikit-Learn HistGradientBoosting + Multi-Objective Decision Engine
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Logic & Real API Integration -->
+    <script>
+        let currentPolicy = 'optimisation';
+        let currentApiResponse = null;
+
+        // Theme Toggle (Dark / Light)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('rf_theme', 'light');
+                document.getElementById('themeIcon').setAttribute('data-lucide', 'moon');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('rf_theme', 'dark');
+                document.getElementById('themeIcon').setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+        }
+
+        // Apply saved theme
+        if (localStorage.getItem('rf_theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function formatDuration(seconds) {
+            if (seconds < 60) return `${Math.round(seconds)}s`;
+            if (seconds < 3600) return `${(seconds / 60).toFixed(1)} mins`;
+            return `${(seconds / 3600).toFixed(2)} hrs`;
+        }
+
+        function setPolicy(policy) {
+            currentPolicy = policy;
+            document.querySelectorAll('.policy-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500/50', 'bg-indigo-500/10', 'text-indigo-600', 'dark:text-indigo-300');
+                btn.classList.add('border-slate-200', 'dark:border-white/5', 'bg-slate-50', 'dark:bg-slate-900', 'text-slate-500', 'dark:text-slate-400');
+            });
+            const activeBtn = document.getElementById(`policy-${policy}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-slate-200', 'dark:border-white/5', 'bg-slate-50', 'dark:bg-slate-900', 'text-slate-500', 'dark:text-slate-400');
+                activeBtn.classList.add('border-indigo-500/50', 'bg-indigo-500/10', 'text-indigo-600', 'dark:text-indigo-300');
+            }
+            evaluateRoutes();
+        }
+
+        function applyPreset(srcCountry, dstCountry, srcCurr, dstCurr, amount, pType) {
+            document.getElementById('source_country').value = srcCountry;
+            document.getElementById('destination_country').value = dstCountry;
+            document.getElementById('source_currency').value = srcCurr;
+            document.getElementById('destination_currency').value = dstCurr;
+            document.getElementById('amount').value = amount;
+            document.getElementById('payment_type').value = pType;
+            evaluateRoutes();
+        }
+
+        async function evaluateRoutes() {
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('dashboardLoader');
+            const winnerHero = document.getElementById('winnerHero');
+            const matrixCard = document.getElementById('matrixCard');
+
+            // Show Buffer/Loading State
+            btn.classList.add('opacity-80', 'scale-[0.98]');
+            btnText.innerText = "Evaluating via ML API...";
+            loader.classList.remove('hidden');
+            winnerHero.classList.add('opacity-40');
+            matrixCard.classList.add('opacity-40');
+
+            const payload = {
+                payment: {
+                    source_country: document.getElementById('source_country').value,
+                    destination_country: document.getElementById('destination_country').value,
+                    source_currency: document.getElementById('source_currency').value,
+                    destination_currency: document.getElementById('destination_currency').value,
+                    amount: parseFloat(document.getElementById('amount').value) || 5000,
+                    payment_type: document.getElementById('payment_type').value
+                },
+                mode: currentPolicy === 'speed' ? 'optimisation' : (currentPolicy === 'cost' ? 'optimisation' : 'optimisation')
+            };
+
+            // Custom weights based on policy
+            if (currentPolicy === 'speed') {
+                payload.weights = { success: 0.35, latency: 0.55, cost: 0.10 };
+            } else if (currentPolicy === 'cost') {
+                payload.weights = { success: 0.35, latency: 0.15, cost: 0.50 };
+            } else {
+                payload.weights = { success: 0.60, latency: 0.25, cost: 0.15 };
+            }
+
+            const startTime = performance.now();
+            let roundtripMs = 0;
+
+            const apiUrl = (window.location.protocol.startsWith('http') && (window.location.port === '8000' || window.location.port === ''))
+                ? '/recommend-route'
+                : 'http://localhost:8000/recommend-route';
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                roundtripMs = Math.round(performance.now() - startTime);
+
+                if (response.ok) {
+                    currentApiResponse = await response.json();
+                    document.getElementById('connectionText').innerText = `API Connected (${roundtripMs}ms)`;
+                    document.getElementById('connectionDot').className = "w-2 h-2 rounded-full bg-emerald-500 pulse-dot";
+                    document.getElementById('inferenceTelemetryTag').innerText = `Inference: ${currentApiResponse.inference_ms.toFixed(1)}ms | Network: ${roundtripMs}ms`;
+                }
+            } catch (err) {
+                console.warn("API request to port 8000 failed. Fallback simulation active.", err);
+                roundtripMs = Math.round(performance.now() - startTime);
+                document.getElementById('connectionText').innerText = `Simulation Fallback (${roundtripMs}ms)`;
+                document.getElementById('connectionDot').className = "w-2 h-2 rounded-full bg-amber-500 pulse-dot";
+            } finally {
+                loader.classList.add('hidden');
+                winnerHero.classList.remove('opacity-40');
+                matrixCard.classList.remove('opacity-40');
+                btn.classList.remove('opacity-80', 'scale-[0.98]');
+                btnText.innerText = "Execute Dual ML Route Evaluation";
+            }
+
+            renderDashboardResults();
+        }
+
+        function renderDashboardResults() {
+            if (!currentApiResponse) return;
+
+            const rec = currentApiResponse.recommendation;
+            const ranked = currentApiResponse.ranked_routes;
+
+            // Winner Banner
+            document.getElementById('routeIdBadge').innerText = rec.route_id;
+            document.getElementById('recommendedTitle').innerText = `${rec.sending_institution} → ${rec.receiving_institution} Direct Clearing`;
+            document.getElementById('compositeScore').innerText = rec.score.toFixed(3);
+            document.getElementById('metricSuccess').innerText = `${(rec.predicted_success_probability * 100).toFixed(1)}%`;
+            document.getElementById('metricSuccessBar').style.width = `${rec.predicted_success_probability * 100}%`;
+            document.getElementById('metricSettlement').innerText = formatDuration(rec.predicted_settlement_seconds);
+            document.getElementById('metricCost').innerText = `$${rec.route_cost.toFixed(2)}`;
+            document.getElementById('decisionReason').innerText = currentApiResponse.explanation;
+
+            // Routes Table
+            const tbody = document.getElementById('routesTableBody');
+            tbody.innerHTML = '';
+
+            ranked.forEach(r => {
+                const isWinner = (r.route_id === rec.route_id);
+                const tr = document.createElement('tr');
+                tr.className = isWinner 
+                    ? "bg-emerald-500/10 text-slate-900 dark:text-white font-bold transition-colors border-l-4 border-l-emerald-500" 
+                    : "hover:bg-slate-50 dark:hover:bg-white/[0.02] text-slate-600 dark:text-slate-300 transition-colors";
+
+                const successPercent = (r.predicted_success_probability * 100).toFixed(1);
+                const probColor = r.predicted_success_probability >= 0.95 
+                    ? 'text-emerald-600 dark:text-emerald-400' 
+                    : (r.predicted_success_probability >= 0.90 ? 'text-cyan-600 dark:text-cyan-400' : 'text-amber-500');
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-bold ${isWinner ? 'text-emerald-600 dark:text-emerald-400' : ''}">${r.route_id}</span>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">(${r.sending_institution} → ${r.receiving_institution})</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono ${probColor}">${successPercent}%</span>
+                            <div class="w-16 bg-slate-200 dark:bg-slate-800 h-1 rounded-full hidden sm:block">
+                                <div class="${r.predicted_success_probability >= 0.90 ? 'bg-emerald-500' : 'bg-amber-500'} h-1 rounded-full" style="width: ${successPercent}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3 font-mono">
+                        ${formatDuration(r.predicted_settlement_seconds)}
+                    </td>
+                    <td class="py-3 px-3 font-mono text-indigo-600 dark:text-indigo-300">
+                        $${r.route_cost.toFixed(2)}
+                    </td>
+                    <td class="py-3 px-3 font-mono ${isWinner ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-400'}">
+                        ${r.score.toFixed(3)}
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        ${isWinner 
+                            ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">WINNER</span>`
+                            : (!r.feasible 
+                                ? `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">REJECTED</span>`
+                                : `<span class="px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-100 dark:bg-white/5">ALTERNATIVE</span>`
+                              )
+                        }
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            evaluateRoutes();
+        });
+    </script>
+</body>
+</html>
