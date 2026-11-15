@@ -1,5 +1,6 @@
 """Top-level entry point to run the Payment Routing REST API."""
 
+import os
 import sys
 from pathlib import Path
 
@@ -12,5 +13,8 @@ if str(SRC_DIR) not in sys.path:
 import uvicorn
 
 if __name__ == "__main__":
-    print("Starting Cross-Border Payment Routing REST API on http://127.0.0.1:8000 ...")
-    uvicorn.run("api.app:app", host="0.0.0.0", port=8000, reload=True)
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Starting Cross-Border Payment Routing REST API on http://{host}:{port} ...")
+    uvicorn.run("api.app:app", host=host, port=port, reload=False)
+

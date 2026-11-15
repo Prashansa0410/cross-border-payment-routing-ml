@@ -208,6 +208,35 @@ Open your browser to explore:
 
 ---
 
+## ☁️ Deployment Guide
+
+RouteFlow AI is fully containerized and production-ready for zero-configuration cloud deployment:
+
+### Option 1: Deploy to Render (Free Cloud Hosting)
+1. Fork or push this repository to GitHub (ensure repository visibility is set to **Public** in GitHub Settings).
+2. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** → **Web Service**.
+3. Connect your GitHub repository: `Prashansa0410/cross-border-payment-routing-ml`.
+4. Render will auto-detect the configuration via `render.yaml` or you can manually configure:
+   * **Runtime:** `Python 3`
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `python main.py`
+5. Click **Deploy Web Service**. Once deployed, your live URL will be active (e.g. `https://routeflow-ai.onrender.com/demo`).
+
+### Option 2: Deploy with Docker
+```bash
+# Build the container image
+docker build -t routeflow-ai .
+
+# Run container (maps port 8000)
+docker run -p 8000:8000 routeflow-ai
+```
+
+### Option 3: Deploy to Railway / Hugging Face Spaces
+* **Railway:** Click **New Project** → **Deploy from GitHub repo**. Railway automatically detects the `Dockerfile` and `Procfile`.
+* **Hugging Face Spaces:** Create a new Space with the **Docker** SDK, push the repository files, and it will build and run on public HTTPS automatically.
+
+---
+
 ## 📡 REST API Reference
 
 ### Health Check
